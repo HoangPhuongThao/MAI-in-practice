@@ -13,8 +13,8 @@ class Network():
     each node to another.
     '''
     
-    def __init__(self, amount_of_nodes, branching_factor, costs = [1], seed = 0,
-                 cost_probabilities = []):
+    def __init__(self, amount_of_nodes, branching_factor, seed = 0, costs = [1],
+                 cost_probabilities = [], secure_path_to_goal = True):
         
         '''
         In the cost matrix the start nodes are on the rows and the end
@@ -55,8 +55,8 @@ class Network():
                 ValueError
             # standardize the probabilities to be equal to 1 and multiply with
             # probability of a connection
-            cost_probabilities *= (10000 - probability_NA) / sum(cost_probabilities)
-            probabilities = [probability_NA] + cost_probabilities       
+            cost_probabilities *= probability_connection / sum(cost_probabilities)
+            probabilities = [1000 - probability_connection] + cost_probabilities       
         
         # generate the cost of all the connections
         node_costs = random.choices([np.nan] + costs, probabilities, k = amount_of_costs)
@@ -71,18 +71,19 @@ class Network():
         # mirror the cost matrix
         cost_matrix = cost_matrix + cost_matrix.T
         
-        # add a path to the goal by generating a sequence of at least 5 nodes
-        goal_path = random.sample(range(1, amount_of_nodes - 1), 
-                                  random.randint(3, amount_of_nodes))        
-        goal_path = [0] + goal_path + [amount_of_nodes - 1]
-        
-        # generate costs for each step of the goal path
-        costs_path = random.choices(costs, k = len(goal_path) - 1)
-        
-        # fill cost matrix with the costs of the goal path
-        for i in range(len(goal_path)-1):
-            cost_matrix[goal_path[i], goal_path[i + 1]] = costs_path[i]
-            cost_matrix[goal_path[i + 1], goal_path[i]] = costs_path[i]
+        if secure_path_to_goal:
+            # add a path to the goal by generating a sequence of at least 5 nodes
+            goal_path = random.sample(range(1, amount_of_nodes - 1), 
+                                      random.randint(3, amount_of_nodes))        
+            goal_path = [0] + goal_path + [amount_of_nodes - 1]
+            
+            # generate costs for each step of the goal path
+            costs_path = random.choices(costs, k = len(goal_path) - 1)
+            
+            # fill cost matrix with the costs of the goal path
+            for i in range(len(goal_path)-1):
+                cost_matrix[goal_path[i], goal_path[i + 1]] = costs_path[i]
+                cost_matrix[goal_path[i + 1], goal_path[i]] = costs_path[i]
                    
         self.cost_matrix = cost_matrix
         
