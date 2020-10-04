@@ -2,17 +2,19 @@
 """
 Created on Fri Oct  2 14:38:23 2020
 
-@author: didie
+@author: didie & thao
 """
 import sys
+
 
 def detect_loop(path):
     # check if path only contains unique values by comparing the length of the
     # path with the path of the unique values of the path
     return len(path) > len(set(path))
 
+
 def check_max_size_queue(max_size_queue, queue):
-    
+    # update memory
     queue_size = sys.getsizeof(queue)
     
     # edit max size of the queue if the size of the queue increased
@@ -26,12 +28,12 @@ def depth_first(goal, network):
     '''
     
     A basic search algorithm, where the queue starts with the start node as the
-    only path in the queue. Next for each itereation the first path in removed 
+    only path in the queue. Next for each iteration the first path is removed
     and all of the children of this path are created. Further, all the new paths
     that contain loops are removed. Then the new paths are added to the front of 
-    the queue. The network stop as soon as there is a connection to the goal node.
-    The function returns the path to the goal and largest size the queue was 
-    during the iterations.
+    the queue. The algorithm stops as soon as there is a connection to the goal node.
+    The function returns the path to the goal and the largest size the queue was
+    during the iterations (i.e. the memory).
 
     '''
     
@@ -41,10 +43,9 @@ def depth_first(goal, network):
 
     # loop until the queue is empty
     while queue:
-        front = queue[0]
         
         # remove the path in the front of the queue
-        queue.pop(0)
+        front = queue.pop(0)
         
         # create list with children of the path that was in front of the queue
         new_paths = [front + [node] for node in network.return_connections(front[-1])]

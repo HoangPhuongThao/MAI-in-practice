@@ -2,12 +2,14 @@
 """
 Created on Sun Oct  4 11:44:09 2020
 
-@author: didie
+@author: didie & thao
 """
 import pandas as pd
 import numpy as np
 from time import time
 from tqdm import tqdm
+import seaborn as sns
+import matplotlib.pyplot as plt
 from network import Network
 from search_algorithms import depth_first, breadth_first, iterative_deepening
 #%%
@@ -21,7 +23,7 @@ branching_factors = [2, 3, 5, 10]
 
 amount_of_test_runs = 10
 algorithms = {"depth_first": depth_first, "breadth_first": breadth_first,
-            "iterative_deeping": iterative_deepening}
+            "iterative_deepening": iterative_deepening}
 
 for algorithm_name, algorithm in algorithms.items():
     for nodes in network_nodes:
@@ -49,8 +51,7 @@ for algorithm_name, algorithm in algorithms.items():
                                                    length_goal_path.mean()]
 
 #%%
-import seaborn as sns
-import matplotlib.pyplot as plt
+
 combos = [["algorithm","no_of_nodes_network"],["algorithm","branching_factor"]]
 variables = ["average_speed", "average_memory_usage", "average_length_goal_path"]
 
@@ -59,11 +60,6 @@ for combo in combos:
     for variable in variables:
         data_var = data[[variable]].unstack(level = 0)
         data_var.columns = data_var.columns.droplevel()    
-        plt.figure()                                    
+        plt.figure()
         sns.heatmap(data_var, cmap = "Reds").set_title(variable)
-
-
-            
-            
-        
-        
+        plt.savefig('Evaluation/' + variable + '_' + combo[1] + '.png')
