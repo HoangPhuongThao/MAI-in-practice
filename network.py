@@ -13,8 +13,8 @@ class network_of_nodes():
     each node to another.
     '''
     
-    def __init__(self, amount_of_nodes, distances = np.arange(5), 
-                 probabilities = [5, 2, 1, 1, 1]):
+    def __init__(self, amount_of_nodes, distances = [np.nan, 1, 2, 3, 4], 
+                 probabilities = [5, 2, 1, 1, 1], seed = 0):
         '''
         In the distance matrix the start nodes are on the rows and the end
         nodes are on the columns. The distance from a node to itself must be
@@ -25,17 +25,33 @@ class network_of_nodes():
 
         self.n = amount_of_nodes
         
+        random.seed(seed)
+        
         # amount of generated distances should be equal to the lower 
         # triangular of the distance matrix
         amount_of_distances = int((amount_of_nodes - 1) * amount_of_nodes / 2)
-        distances = random.choices(distances, probabilities, k = amount_of_distances)
-        
-        lower_triangular_index = np.tril_indices(amount_of_nodes, k=-1) 
+        node_distances = random.choices(distances, probabilities, k = amount_of_distances)
+ 
+        lower_triangular_index = np.tril_indices(amount_of_nodes, k=-1)
         
         distance_matrix = np.zeros((amount_of_nodes, amount_of_nodes))
-        distance_matrix[lower_triangular_index] = distances
+        distance_matrix[np.diag_indices(amount_of_nodes)] = np.nan
+        distance_matrix[lower_triangular_index] = node_distances
         # mirror the distance matrix
         distance_matrix = distance_matrix + distance_matrix.T
+        
+        goal_path = random.sample(range(1, amount_of_nodes - 1), 
+                                  random.randint(3, int(amount_of_nodes / 3)))        
+        goal_path = [0] + goal_path + [amount_of_nodes - 1]
+
+        distances.remove(np.nan)
+    
+        distances_path = random.choices(distances, k = len(goal_path) - 1)
+
+        for i in range(len(goal_path)-1):
+            distance_matrix[goal_path[i], goal_path[i + 1]] = distances_path[i]
+            distance_matrix[goal_path[i + 1], goal_path[i]] = distances_path[i]
+                   
         self.distance_matrix = distance_matrix
         
     def get_distance(self, node0, node1):
