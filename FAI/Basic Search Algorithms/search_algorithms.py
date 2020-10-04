@@ -4,7 +4,7 @@ Created on Fri Oct  2 14:38:23 2020
 
 @author: didie & thao
 """
-import sys
+import sys, random
 
 
 def detect_loop(path):
@@ -148,6 +148,120 @@ def iterative_deepening(goal, network, depth = 3):
                    
         # increase depth if no solution was found       
         depth += 1
+    
+    return [], max_size_queue
+
+def bi_directional(goal, network):
+    
+    def return_intersection(list1, list2):
+        unique_list1 = set(list1)
+        return list(unique_list1 - (unique_list1 - set(list2)))
+
+    # initialize the queue and the max size of the queue
+    queue1 = [[0]]
+    queue2 = [[goal]]
+    max_size_queue = 1
+
+    # loop until the queue is empty
+    while queue1 and queue2:
+        
+        # remove the path in the front of the queue
+        front1 = queue1.pop(0)
+        front2 = queue2.pop(0)
+        
+        # create list with children of the path that was in front of the queue
+        new_paths1 = [front1 + [node] for node in network.return_connections(front1[-1])]
+        new_paths2 = [front2 + [node] for node in network.return_connections(front2[-1])]
+        
+        # remove new_paths with loops
+        new_paths1 = [path for path in new_paths1 if not detect_loop(path)]
+        new_paths2 = [path for path in new_paths2 if not detect_loop(path)]
+        
+        # add new paths to the back of the queue
+        queue1 += new_paths1
+        queue2 += new_paths2
+        
+        # concatenate all paths of the queue
+        nodes_queue1 = []
+        nodes_queue2 = []
+        for path in queue1: nodes_queue1 += path
+        for path in queue2: nodes_queue2 += path
+        
+        # calculate if there are any intersecting nodes between the queues
+        intersections = return_intersection(nodes_queue1, nodes_queue2)
+        
+        # if there exist an intersecting value
+        if intersections:
+            # select the first intersecting node
+            intersection = intersections[0]
+            
+            # look for a path containing the intersection and cut off the nodes
+            # after the intersecting node
+            for path1 in queue1:
+                if intersection in path1: 
+                    path1 = path1[:path1.index(intersection)]
+                    break
+                
+            for path2 in queue2:
+                if intersection in path2: 
+                    path2 = path2[:(path2.index(intersection)+1)]
+                    break
+            # join the two lists at the intersection by reversing the list that
+            # started at the goal node to obtain goal path
+            return path1 + path2[::-1], max_size_queue
+        
+        queue_size = sys.getsizeof(queue1) + sys.getsizeof(queue2)
+        
+        # edit max size of the queue if the size of the queue increased
+        if queue_size > max_size_queue: 
+           max_size_queue = queue_size 
+    
+    return [], max_size_queue
+
+def non_deterministic(goal, network):
+    '''
+    
+    A basic search algorithm, where the queue starts with the start node as the
+    only path in the queue. Next for each itereation the first path in removed 
+    and all of the children of this path are created. Further, all the new paths
+    that contain loops are removed. Then the new paths are added to the back of 
+    the queue. The network stop as soon as there is a connection to the goal node.
+    The function returns the path to the goal and largest size the queue was 
+    during the iterations.
+
+    '''
+    
+    # initialize the queue and the max size of the queue
+    queue = [[0]]
+    max_size_queue = 1
+
+    # loop until the queue is empty
+    while queue:
+        front = queue[0]
+        
+        # remove the path in the front of the queue
+        queue.pop(0)
+        
+        # create list with children of the path that was in front of the queue
+        new_paths = [front + [node] for node in network.return_connections(front[-1])]
+        
+        
+        # remove new_paths with loops
+        new_paths = [path for path in new_paths if not detect_loop(path)]
+        
+        # check if new paths reach the goal 
+        for path in new_paths: 
+            if path[-1] == goal: return path, max_size_queue
+        
+        # add new paths at random places in the queue
+        for path in new_paths:
+            # generate a random index to add the path
+            insert_index = random.randint(0, len(queue))
+            
+            # add path at random place
+            queue = queue[:insert_index] + [path] + queue[insert_index:]
+            
+        max_size_queue = check_max_size_queue(max_size_queue, queue) 
     
     return [], max_size_queue
 
