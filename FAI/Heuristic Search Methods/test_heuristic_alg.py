@@ -1,6 +1,8 @@
 import random
 import sys
-sys.path.insert(1, '/Users/Hiro_hankamura/Desktop/HomeProjects/MAI-in-practice/FAI/Basic Search Algorithms')
+import os
+PATH, TAIL = os.path.split(os.path.abspath(os.getcwd()))
+sys.path.insert(1, PATH + '/Basic Search Algorithms')
 from network import Network
 from heuristic_search_alg import hillClimbing1
 
@@ -25,6 +27,7 @@ if __name__ == "__main__":
     path, max_size_queue = hillClimbing1(goal, network, heuristicValueList)
     print("Path found: ", path)
     print("max_size_queue: ", max_size_queue)
+    print(os.path.abspath(os.getcwd()))
 
 
 
