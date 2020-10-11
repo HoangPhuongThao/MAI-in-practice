@@ -1,5 +1,3 @@
-import sys
-sys.path.insert(1, '/Users/Hiro_hankamura/Desktop/HomeProjects/MAI-in-practice/FAI/Basic Search Algorithms')
 from search_algorithms import detect_loop
 
 
