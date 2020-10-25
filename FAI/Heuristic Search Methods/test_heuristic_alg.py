@@ -1,9 +1,5 @@
 import random
-import sys
-import os
-PATH, TAIL = os.path.split(os.path.abspath(os.getcwd()))
-sys.path.insert(1, PATH + '/Basic Search Algorithms')
-from network import Network
+from network_heuristic import index_heuristic_network
 from heuristic_search_alg import hillClimbing1, beamSearch
 
 
@@ -19,16 +15,14 @@ if __name__ == "__main__":
     amountOfNodes = 10
     branchingFactor = 2
     goal = amountOfNodes-1
-    network = Network(amountOfNodes, branchingFactor, seed=0, secure_path_to_goal=True)
-    heuristicValueList = generateHeuristicValues(network.n)
+    network = index_heuristic_network(amountOfNodes, branchingFactor, seed=0)
     print(network.cost_matrix)
-    print(heuristicValueList)
 
-    path_hc1, max_size_queue_hc1 = hillClimbing1(goal, network, heuristicValueList)
+    path_hc1, max_size_queue_hc1 = hillClimbing1(goal, network)
     print("Hill-climbing 1 Path found: ", path_hc1)
     print("Hill-climbing 1 max_size_queue: ", max_size_queue_hc1)
 
-    path_bs, max_size_queue_bs = beamSearch(goal, network, heuristicValueList)
+    path_bs, max_size_queue_bs = beamSearch(goal, network)
     print("Beam-search Path found: ", path_bs)
     print("Beam-search max_size_queue: ", max_size_queue_bs)
 

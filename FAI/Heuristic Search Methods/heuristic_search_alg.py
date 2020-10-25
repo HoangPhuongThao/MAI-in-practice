@@ -1,5 +1,3 @@
-
-
 from numpy import inf
 import sys
 
@@ -19,21 +17,18 @@ def check_max_size_queue(max_size_queue, queue):
        
     return max_size_queue
 
-def sortChildrenByHeuristicVal(children, heuristicValueList):
+def sortChildrenByHeuristicVal(network, children):
     # sort children in an ascending order by their heuristic value
-    childrenHeuristicValues = []
-    for node in children:
-        childrenHeuristicValues.append(heuristicValueList[node])
+    childrenHeuristicValues = [network.get_heuristic(child) for child in children]
     sortedIndices = sorted(range(len(childrenHeuristicValues)), key=lambda k: childrenHeuristicValues[k])
 
     return sortedIndices
 
 
-def hillClimbing1(goal, network, heuristicValueList):
+def hillClimbing1(goal, network):
     '''
     This algorithm performs the same way as depth-first algorithm BUT instead of left-to-right selection it first
     selects the child with the best (the smallest) heuristic value.
-    :param heuristicValueList: holds values prescribed to each node by a specific heuristic function
     :return: the found path from start node to goal node and the max size memory we used
     '''
 
@@ -49,7 +44,7 @@ def hillClimbing1(goal, network, heuristicValueList):
 
         # create list with SORTED children (ascending order by heuristic value) of the path that was in front of the queue
         children = network.return_connections(front[-1])
-        sortedIndices = sortChildrenByHeuristicVal(children, heuristicValueList)
+        sortedIndices = sortChildrenByHeuristicVal(network, children)
 
         new_paths = [front + [children[index]] for index in sortedIndices]
 
@@ -67,7 +62,7 @@ def hillClimbing1(goal, network, heuristicValueList):
     return [], max_size_queue
 
 
-def beamSearch(goal, network, heuristicValueList, width=2):
+def beamSearch(goal, network, width=2):
     '''
     This algorithm performs a breadth-first search narrowed by a WIDTH parameter, i.e. we only keep the WIDTH best
     children (according to their heuristic values) at each level. We also optimize by ignoring leafs that are not the
@@ -108,10 +103,10 @@ def beamSearch(goal, network, heuristicValueList, width=2):
             new_paths.remove(path)
 
         # sort children in an ascending order by their heuristic value (i.e. sorting new_paths according to heuristic)
-        sortedIndices = sortChildrenByHeuristicVal(children, heuristicValueList)
+        sortedIndices = sortChildrenByHeuristicVal(network, children)
 
         # add only width best paths to the queue
-        queue = [new_paths[sortedIndices[i]] for i in range(width)]
+        queue = [new_paths[sortedIndices[i]] for i in range(min(width, len(new_paths)))]
 
         # check that the max_size_queue should be constant = width
         max_size_queue = max([max_size_queue, len(queue)])
