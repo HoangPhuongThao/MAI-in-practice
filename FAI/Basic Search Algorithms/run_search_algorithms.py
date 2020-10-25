@@ -21,7 +21,7 @@ test_results = pd.DataFrame([], columns = ["Algorithm","Number of nodes in netwo
 network_nodes = [250, 500, 750, 1000, 1500]
 branching_factors = [2, 3, 5, 7, 10]
 
-amount_of_test_runs = 5
+amount_of_test_runs = 3
 algorithms = {"Depth First": depth_first, "Breadth First": breadth_first,
             "Iterative Deepening": iterative_deepening, 
             "Bi-directional": bi_directional, "Non-determenistic": non_deterministic}
@@ -40,7 +40,7 @@ for algorithm_name, algorithm in algorithms.items():
             print("\n", algorithm_name, nodes, branching_factor)
             
             for i in tqdm(range(amount_of_test_runs)):
-                network = Network(nodes, branching_factor, seed = 1000 + i)
+                network = Network(nodes, branching_factor, seed = i)
                 start = time()
                 goal_path, memory_usage[i] = algorithm(goal, network)
                 speed[i]= time() - start

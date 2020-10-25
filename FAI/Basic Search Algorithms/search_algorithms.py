@@ -83,14 +83,12 @@ def breadth_first(goal, network):
 
     # loop until the queue is empty
     while queue:
-        front = queue[0]
         
         # remove the path in the front of the queue
-        queue.pop(0)
+        front = queue.pop(0)
         
         # create list with children of the path that was in front of the queue
-        new_paths = [front + [node] for node in network.return_connections(front[-1])]
-        
+        new_paths = [front + [node] for node in network.return_connections(front[-1])]        
         
         # remove new_paths with loops
         new_paths = [path for path in new_paths if not detect_loop(path)]
@@ -154,8 +152,19 @@ def iterative_deepening(goal, network, depth = 3):
 def bi_directional(goal, network):
     
     def return_intersection(list1, list2):
+        '''
+        
+        calculate the unique items in both lists. Then calculate the complement 
+        by first substracting the first set of unique values of the other. This 
+        will return the values in list1 that are not present in list2. If list1
+        and list2 contain any intersecting values than the complement will 
+        have less values than list1. If you subtract the complement from list 1
+        you obtain the values that were removed from list1 while calculating
+        the complement, thus the intersecting values.
+        '''
         unique_list1 = set(list1)
-        return list(unique_list1 - (unique_list1 - set(list2)))
+        complement = (unique_list1 - set(list2))
+        return list(unique_list1 - complement)
 
     # initialize the queue and the max size of the queue
     queue1 = [[0]]
@@ -237,10 +246,9 @@ def non_deterministic(goal, network):
 
     # loop until the queue is empty
     while queue:
-        front = queue[0]
         
         # remove the path in the front of the queue
-        queue.pop(0)
+        front = queue.pop(0)
         
         # create list with children of the path that was in front of the queue
         new_paths = [front + [node] for node in network.return_connections(front[-1])]
