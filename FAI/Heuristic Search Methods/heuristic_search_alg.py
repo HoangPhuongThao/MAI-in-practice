@@ -57,8 +57,9 @@ def hillClimbing1(goal, network):
 
         # add new paths to the front of the queue
         queue = new_paths + queue
-        max_size_queue = max([max_size_queue, len(queue)])
+        max_size_queue = check_max_size_queue(max_size_queue, queue)
 
+    print("No path found")
     return [], max_size_queue
 
 
@@ -108,26 +109,18 @@ def beamSearch(goal, network, width=2):
         # add only width best paths to the queue
         queue = [new_paths[sortedIndices[i]] for i in range(min(width, len(new_paths)))]
 
-        # check that the max_size_queue should be constant = width
-        max_size_queue = max([max_size_queue, len(queue)])
+        max_size_queue = check_max_size_queue(max_size_queue, queue)
 
         # check if new paths reach the goal
         for path in new_paths:
             if path[-1] == goal: return path, max_size_queue
 
+    print("No path found")
     return [], max_size_queue
 
 def HillClimbing2(goal, network):
     '''
-    
-    A basic search algorithm, where the queue starts with the start node as the
-    only path in the queue. Next for each itereation the first path in removed 
-    and all of the children of this path are created. Further, all the new paths
-    that contain loops are removed. Then the new paths are added to the back of 
-    the queue. The network stop as soon as there is a connection to the goal node.
-    The function returns the path to the goal and largest size the queue was 
-    during the iterations.
-
+     = Beam search algorithm with width=1
     '''
     
     # initialize the queue and the max size of the queue
