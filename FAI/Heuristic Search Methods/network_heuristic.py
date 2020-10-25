@@ -14,7 +14,7 @@ class index_heuristic_network():
 
         
         if branching_factor >N:
-            print("branching factor cannot be more than number of nodes")
+            print("Branching factor cannot be more than number of nodes!")
             ValueError
         
         self.N = N

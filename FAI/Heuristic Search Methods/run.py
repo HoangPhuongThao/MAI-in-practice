@@ -4,25 +4,31 @@ Created on Sun Oct  4 11:44:09 2020
 
 @author: didie & thao
 """
+import os
 import pandas as pd
 import numpy as np
 from time import time
 from tqdm import tqdm
 import seaborn as sns
 import matplotlib.pyplot as plt
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 from network_heuristic import index_heuristic_network
 from heuristic_search_alg import HillClimbing2, Greedy
+from search_algorithms import depth_first, breadth_first, iterative_deepening, bi_directional, non_deterministic
+
 #%%
 
 # initialize dataframe with results
 test_results = pd.DataFrame([], columns = ["Algorithm","Number of nodes in network","Branching Factor", "Average Speed", "Average Memory Usage", "Average Length Goal Path"])
 
 # select value for the amount of nodes and probabilities of the connectivity
-network_nodes = [50, 100] #, 750, 1000, 1500]
-branching_factors = [2] #, 3, 5, 7, 10]
+network_nodes = [10, 15,20, 25] #, 750, 1000, 1500]
+branching_factors = [1, 2, 3] #, 3, 5, 7, 10]
 
-amount_of_test_runs = 3
-algorithms = {"HillClimbing2": HillClimbing2, "Greedy" : Greedy}
+amount_of_test_runs = 20
+algorithms = {"HillClimbing2": HillClimbing2, "Greedy" : Greedy,"Depth First": depth_first,
+              "Breadth First": breadth_first, "Iterative Deepening": iterative_deepening, 
+            "Bi-directional": bi_directional, "Non-determenistic": non_deterministic}
 
 for algorithm_name, algorithm in algorithms.items():
     for nodes in network_nodes:
