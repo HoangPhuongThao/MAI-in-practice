@@ -3,7 +3,6 @@ import os
 PATH, TAIL = os.path.split(os.path.abspath(os.getcwd()))
 sys.path.insert(1, PATH + '/Basic Search Algorithms')
 from network import Network
-from draw_tree import drawTree2
 
 
 class Node(object):
