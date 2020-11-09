@@ -34,7 +34,7 @@ def hillClimbing1(goal, network):
 
     # initialize the queue and the max size of the queue
     queue = [[0]]
-    max_size_queue = 1
+    max_size_queue = sys.getsizeof(queue)
 
     # loop until the queue is empty
     while queue:
@@ -73,7 +73,7 @@ def beamSearch(goal, network, width=2):
 
     # initialize the queue and the max size of the queue
     queue = [[0]]
-    max_size_queue = 1
+    max_size_queue = sys.getsizeof(queue)
 
     # loop until the queue is empty
     while queue:
