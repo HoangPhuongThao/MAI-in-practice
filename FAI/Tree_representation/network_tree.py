@@ -1,9 +1,9 @@
-import sys
 import os
-PATH, TAIL = os.path.split(os.path.abspath(os.getcwd()))
-sys.path.insert(1, PATH + '/Basic Search Algorithms')
-from network import Network
 
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
+os.chdir(".")
+from network import Network
+#%%
 
 class Node(object):
     def __init__(self, data):
@@ -59,14 +59,14 @@ class NetworkTree(object):
                 parent_node = parent_node.parent
         return loop
 
-
+#%%
 # test the visualisation of the arbitrary network tree
 if __name__ == "__main__":
     # define the attributes of the tree
-    amountOfNodes = 5
-    branchingFactor = 2
+    amountOfNodes = 7
+    branchingFactor = 1
     goal = amountOfNodes-1
-    network = Network(amountOfNodes, branchingFactor, seed=0, secure_path_to_goal=True)
+    network = Network(amountOfNodes, branchingFactor, seed=1, secure_path_to_goal=True)
     print(network.cost_matrix)
 
     # build the tree from a root
